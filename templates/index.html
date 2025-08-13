@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roblox Player Info</title>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f5f7fa; color: #333; margin:0; padding:0; display:flex; justify-content:center; align-items:flex-start; min-height:100vh;}
+.container { background:white; padding:20px 30px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin-top:30px; width: 500px;}
+h1 {text-align:center;}
+form { display:flex; flex-direction:column; gap:10px; margin-bottom:20px;}
+input, select, button { padding:10px; border-radius:6px; border:1px solid #ccc; font-size:16px;}
+button { background-color:#4CAF50; color:white; cursor:pointer;}
+button:hover { background-color:#45a049;}
+.result-card { background:#f9f9f9; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.05); margin-top:10px;}
+table { width:100%; border-collapse: collapse; margin-top:5px;}
+th, td { border:1px solid #ccc; padding:5px; text-align:left;}
+th { background:#e0e0e0;}
+.error { color:red; font-weight:bold;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Roblox Player Info</h1>
+<form method="post">
+<select name="searchType">
+    <option value="username">По имени</option>
+    <option value="userid">По ID</option>
+</select>
+<select name="infoType">
+    <option value="basic">Основное (ID, Username, DisplayName)</option>
+    <option value="inventory">Инвентарь</option>
+    <option value="friends">Друзья</option>
+    <option value="groups">Группы</option>
+    <option value="badges">Badges</option>
+</select>
+<input type="text" name="query" placeholder="Введите ник или ID" required>
+<button type="submit">Искать</button>
+</form>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+{% if data %}
+<div class="result-card">
+    <p><strong>Username:</strong> {{ data.Username }}</p>
+    <p><strong>ID:</strong> {{ data.ID }}</p>
+    <p><strong>DisplayName:</strong> {{ data.DisplayName }}</p>
+    {% if data.Inventory %}
+    <h3>Инвентарь</h3>
+    <table><tr><th>Name</th><th>AssetType</th></tr>{% for item in data.Inventory %}<tr><td>{{ item.name }}</td><td>{{ item.assetType }}</td></tr>{% endfor %}</table>
+    {% endif %}
+    {% if data.Friends %}
+    <h3>Друзья</h3>
+    <table><tr><th>Username</th><th>ID</th></tr>{% for f in data.Friends %}<tr><td>{{ f.displayName }}</td><td>{{ f.id }}</td></tr>{% endfor %}</table>
+    {% endif %}
+    {% if data.Groups %}
+    <h3>Группы</h3>
+    <table><tr><th>Название</th><th>Role</th></tr>{% for g in data.Groups %}<tr><td>{{ g.group.name }}</td><td>{{ g.role.name }}</td></tr>{% endfor %}</table>
+    {% endif %}
+    {% if data.Badges %}
+    <h3>Badges</h3>
+    <table><tr><th>Name</th><th>ID</th></tr>{% for b in data.Badges %}<tr><td>{{ b.name }}</td><td>{{ b.id }}</td></tr>{% endfor %}</table>
+    {% endif %}
+</div>
+{% endif %}
+</div>
+</body>
+</html>
